@@ -685,6 +685,11 @@ module ActiveRecord
               yield
             end
           rescue => e
+            if defined?(::SQLite3::SQLException) && e.is_a?(::SQLite3::SQLException)
+              if e.message == "no such table: dogs"
+                pp [@config, e]
+              end
+            end
             raise translate_exception_class(e, sql, binds)
           end
         end
